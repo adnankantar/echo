@@ -24,7 +24,7 @@ pip install -r requirements.txt
 ## Usage
 
 ```python
-python echo_functions.py
+python Echo Assistant.py
 ```
 
   
