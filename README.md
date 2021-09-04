@@ -14,11 +14,11 @@ Echo is an open-source voice assistant which uses machine learning is programmed
   
 ## Installation
 
-Install echo with pip
+Install echo with setup.py. "Only Windows"
 
 ```bash
 cd echo
-pip install -r requirements.txt
+python setup.py
 ```
     
 ## Usage
