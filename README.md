@@ -1,5 +1,5 @@
 
-![Logo](https://raw.githubusercontent.com/cyber-4444/echo/main/images/gradiant_logo.png)
+![Logo](https://echo.adnank0.repl.co/images/gradiant_logo.png)
 
 
     
