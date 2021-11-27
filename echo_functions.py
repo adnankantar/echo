@@ -7,8 +7,11 @@ from simple_colors import *
 import operator
 import time
 import sys
+import wikipedia
+import pyjokes
 
 def listen():
+    input("Press [ENTER] to Talk")
     text = ""
     r = sr.Recognizer()
     with sr.Microphone() as source:
@@ -18,7 +21,6 @@ def listen():
 
     try:
         text = r.recognize_google(audio, language="eng")
-        text.replace("estanbul", "Istanbul")
         print(text)
         flag = True
     except sr.UnknownValueError:
@@ -30,23 +32,25 @@ def listen():
     return flag,text
 
 def check(text, key):
-    def classify(text):
-        url = "https://machinelearningforkids.co.uk/api/scratch/" + key + "/classify"
+    try:
+        def classify(text):
+            url = "https://machinelearningforkids.co.uk/api/scratch/" + key + "/classify"
+            response = requests.get(url, params={"data": text})
 
-        response = requests.get(url, params={"data": text})
-
-        if response.ok:
-            responseData = response.json()
-            topMatch = responseData[0]
-            return topMatch
-        else:
-            response.raise_for_status()
-    demo = classify(text)
-    label = demo["class_name"]
-    confidence = demo["confidence"]
-    return label,confidence
-
-def answer(label,confidence,flag, voice_id):
+            if response.ok:
+                responseData = response.json()
+                topMatch = responseData[0]
+                return topMatch
+            else:
+                response.raise_for_status()
+        demo = classify(text)
+        label = demo["class_name"]
+        confidence = demo["confidence"]
+        return label, confidence
+    except:
+        pass
+    
+def answer(label,confidence,flag,voice_id,text):
     if flag == True:
         if confidence > 65 and label == "how_are_you":
             answer_w_speech = "I am fine thanks, how about you?"
@@ -79,6 +83,31 @@ def answer(label,confidence,flag, voice_id):
         elif confidence > 65 and label == "weather":
             get_weather()
             answer_w_speech = ""
+        elif confidence > 65 and label == "echo_bad":
+            answer_w_speech = "I am sorry, I will try my best."
+        elif confidence > 65 and label == "can_you_help":
+            answer_w_speech = "What can I do for you?"
+        elif confidence > 65 and label == "joke":
+            answer_w_speech = pyjokes.get_joke(language="en", category="neutral")
+        elif confidence > 65 and label == "echo_funny":
+            answer_w_speech = "Happy to hear that."
+        elif confidence > 65 and label == "not_funny":
+            answer_w_speech = "I will try to find better jokes."
+        elif confidence > 65 and label == "echo_good":
+            answer_w_speech = "Thanks, I appreciate that."
+        elif confidence > 65 and label == "echo_hobby":
+            answer_w_speech = "My hobby is helping human beings."
+        elif confidence > 65 and label == "user_birthday":
+            answer_w_speech = "Today is your day."
+        elif confidence > 65 and label == "user_missed":
+            answer_w_speech = "I missed you too."
+        elif confidence > 65 and label == "user_will_be_back":
+            answer_w_speech = "I am waiting!"
+        elif "when is" or "why is" "why are" "which" "who is" "where is" "who are" "what is" "what are" in text:
+            try:
+                answer_w_speech = (wikipedia.summary(text, sentences=2))
+            except:
+                answer_w_speech = "We couldn't find anything about your question. Try to ask something different."
         elif confidence > 65 and label == "exit_assistant":
             answer_w_speech = "Good bye."
             print(answer_w_speech)
@@ -144,9 +173,7 @@ def get_time():
 def get_weather():
     api_key = os.getenv("api_key")
     base_url = "https://api.openweathermap.org/data/2.5/weather?"
-    print("City name : ")
-    flag, text = listen()
-    city_name = text
+    city_name = get_location()
     complete_url = base_url + "q=" + city_name + "&appid=" + api_key
     response = requests.get(complete_url)
     x = response.json()
@@ -160,3 +187,9 @@ def get_weather():
         print(" Temperature (in celcius) = " + str(current_temperature) + "\n description = " + str(weather_description))
     else:
         print("City Not Found")
+
+def get_location():
+    ip_addr = requests.get('https://api.ipify.org').content.decode('utf8')
+    response = requests.get("https://geolocation-db.com/json/" + ip_addr + "&position=true").json()
+    location = response["city"]
+    return location
