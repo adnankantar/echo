@@ -8,6 +8,9 @@ with open('voice_id.txt', "r") as myfile:
     myfile.close()
 
 while True:
-    flag, text = listen()
-    label,confidence = check(text, key)
-    answer(label,confidence,flag,voice_id)
+    try:
+        flag, text = listen()
+        label,confidence = check(text, key)
+        answer(label,confidence,flag,voice_id,text)
+    except:
+        pass
