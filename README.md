@@ -9,7 +9,7 @@ Echo is an open-source voice assistant which uses machine learning is programmed
 
 ## Author
 
-- [@cyber-4444](https://github.com/cyber-4444/)
+- [@adnankantar](https://github.com/adnankantar/)
 
   
 ## Installation
@@ -38,7 +38,7 @@ python Echo Assistant.py
   
 ## Feedback
 
-If you have any feedback, please reach out to me at adnan.kantar2000@gmail.com
+If you have any feedback, please write down to issues part.
 
   
 ## License
